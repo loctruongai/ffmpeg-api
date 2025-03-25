@@ -1,9 +1,13 @@
 from flask import Flask, request, send_file
+import subprocess
 import os
 import uuid
-import subprocess
 
 app = Flask(__name__)
+
+@app.route("/", methods=["GET"])
+def home():
+    return "✅ API is live!"
 
 @app.route('/kenburns', methods=['POST'])
 def create_kenburns_video():
@@ -29,7 +33,7 @@ def create_kenburns_video():
             '-y',
             '-loop', '1',
             '-i', image_path,
-            '-filter_complex', 'zoompan=z=\'min(zoom+0.0005,1.5)\':d=180:s=1080x1920',
+            '-filter_complex', "zoompan=z='min(zoom+0.0005,1.5)':d=180:s=1080x1920",
             '-c:v', 'libx264',
             '-t', '6',
             '-pix_fmt', 'yuv420p',
@@ -49,5 +53,6 @@ def create_kenburns_video():
         print("❌ Lỗi không xác định:", e)
         return {'error': 'Internal Server Error', 'details': str(e)}, 500
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000, debug=True)
+if __name__ == "__main__":
+    print("🚀 Khởi động API tại cổng 8000")
+    app.run(debug=True, host="0.0.0.0", port=8000)
